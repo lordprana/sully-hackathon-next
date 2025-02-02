@@ -9,10 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
     "@ricky0123/vad-react": "^0.0.28",
     "next": "15.1.6",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-loading-indicator": "^1.0.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -4,16 +4,25 @@ import { useMicVAD } from '@ricky0123/vad-react'
 
 const SERVER_URL = "ws://localhost:5005"; // Change if needed
 
-export default function MicVADRecorder() {
+export default function MicVADRecorder({
+  onListening,
+  onVoiceProcessingBegin,
+  onVoiceProcessingEnd,
+  onSpeakingEnd
+                                       }) {
   const [ws, setWs] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
+  useEffect(() => {
+    startWebSocket();
+  }, [])
   const vad = useMicVAD({
     onSpeechStart: () => {
       console.log("Speech started...");
-      startWebSocket();
+      onListening()
     },
     onSpeechEnd: (audio) => {
       console.log("Speech ended, sending data...");
+      onVoiceProcessingBegin()
       sendAudioToServer(audio);
     },
   });
@@ -40,6 +49,12 @@ export default function MicVADRecorder() {
 
         // Play the audio
         const audio = new Audio(audioUrl);
+        audio.addEventListener("ended", () => {
+          console.log("Audio finished playing!");
+          onSpeakingEnd()
+        });
+
+        onVoiceProcessingEnd()
         audio.play();
       }
     }
@@ -55,16 +70,17 @@ export default function MicVADRecorder() {
     setIsRecording(false);
   };
 
-  return (
-    <div>
-      <button onClick={() => vad?.start()} disabled={isRecording}>
-        🎤 Start Recording
-      </button>
-      <button onClick={() => vad?.pause()} disabled={!isRecording}>
-        🛑 Stop
-      </button>
-    </div>
-  );
+  return null
+  // return (
+  //   <div>
+  //     <button onClick={() => vad?.start()} disabled={isRecording}>
+  //       🎤 Start Recording
+  //     </button>
+  //     <button onClick={() => vad?.pause()} disabled={!isRecording}>
+  //       🛑 Stop
+  //     </button>
+  //   </div>
+  // );
 }
 
 /**
