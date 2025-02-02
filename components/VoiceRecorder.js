@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { MicVAD } from "@ricky0123/vad-web";
 import { useMicVAD } from '@ricky0123/vad-react'
 
-const SERVER_URL = "ws://localhost:5005"; // Change if needed
+const SERVER_URL = process.env.NEXT_PUBLIC_WEBSOCKET_SERVER; // Change if needed
 
 export default function MicVADRecorder({
   onListening,
