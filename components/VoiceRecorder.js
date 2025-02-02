@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from 'react'
 import { MicVAD } from "@ricky0123/vad-web";
 import { useMicVAD } from '@ricky0123/vad-react'
 
@@ -12,6 +12,8 @@ export default function MicVADRecorder({
                                        }) {
   const [ws, setWs] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
+  const audioRef = useRef(null)
+
   useEffect(() => {
     startWebSocket();
   }, [])
@@ -19,6 +21,11 @@ export default function MicVADRecorder({
     onSpeechStart: () => {
       console.log("Speech started...");
       onListening()
+      // Pause the currently playing audio if it exists
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0; // Reset audio playback position
+      }
     },
     onSpeechEnd: (audio) => {
       console.log("Speech ended, sending data...");
@@ -49,6 +56,7 @@ export default function MicVADRecorder({
 
         // Play the audio
         const audio = new Audio(audioUrl);
+        audioRef.current = audio
         audio.addEventListener("ended", () => {
           console.log("Audio finished playing!");
           onSpeakingEnd()
